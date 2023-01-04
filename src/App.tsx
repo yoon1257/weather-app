@@ -4,6 +4,7 @@ import styled from "styled-components";
 import "bootstrap/dist/css/bootstrap.min.css";
 import WeatherBox from "components/WeatherBox";
 import WeatherButton from "components/WeatherButton";
+import ClipLoader from "react-spinners/ClipLoader";
 import { IWeather } from "interface";
 
 //해야할일
@@ -17,6 +18,7 @@ import { IWeather } from "interface";
 const App: React.FC = () => {
   const [weather, setWeather] = useState<IWeather | null>(null);
   const [city, setCity] = useState("");
+  const [loading, setLoading] = useState(false);
   const cities = ["Paris", "New york", "Tokyo", "Seoul"];
   // 현재위치
   const getCurrentLocation = () => {
@@ -29,16 +31,20 @@ const App: React.FC = () => {
 
   const getWeatherByCurrentLocation = async (lat: number, lon: number) => {
     const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=2fddad335d6c9dbe0ad6924ec2b30d72&units=metric`;
+    setLoading(true);
     const response = await fetch(url);
     const data = await response.json();
     setWeather(data);
+    setLoading(false);
   };
 
   const getWeatherByCity = async () => {
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=2fddad335d6c9dbe0ad6924ec2b30d72&units=metric`;
+    setLoading(true);
     const response = await fetch(url);
     const data = await response.json();
     setWeather(data);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -51,7 +57,18 @@ const App: React.FC = () => {
 
   return (
     <WeatherContainer>
-      <WeatherBox weather={weather} />
+      {loading ? (
+        <ClipLoader
+          color="#f88c6b"
+          loading={loading}
+          size={30}
+          aria-label="Loading Spinner"
+          data-testid="loader"
+        />
+      ) : (
+        <WeatherBox weather={weather} />
+      )}
+
       <WeatherButton cities={cities} setCity={setCity} />
     </WeatherContainer>
   );
