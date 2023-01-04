@@ -1,17 +1,21 @@
-import React from "react";
+import React, { SetStateAction } from "react";
 import { Button } from "react-bootstrap";
 import styled from "styled-components";
 
 type WeatherButtonProps = {
   cities: string[];
+  setCity: React.Dispatch<SetStateAction<string>>;
 };
-const WeatherButton: React.FC<WeatherButtonProps> = ({ cities }) => {
-  console.log("city", cities);
+const WeatherButton: React.FC<WeatherButtonProps> = ({ cities, setCity }) => {
   return (
     <WeatherButtonContainer>
       <Button variant="outline-dark">Current</Button>
-      {cities.map((item) => (
-        <Button key={item} variant="outline-dark">
+      {cities.map((item, index) => (
+        <Button
+          key={index}
+          variant="outline-dark"
+          onClick={() => setCity(item)}
+        >
           {item}
         </Button>
       ))}

@@ -16,6 +16,7 @@ import { IWeather } from "interface";
 
 const App: React.FC = () => {
   const [weather, setWeather] = useState<IWeather | null>(null);
+  const [city, setCity] = useState("");
   const cities = ["Paris", "New york", "Tokyo", "Seoul"];
   // 현재위치
   const getCurrentLocation = () => {
@@ -33,14 +34,25 @@ const App: React.FC = () => {
     setWeather(data);
   };
 
+  const getWeatherByCity = async () => {
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=2fddad335d6c9dbe0ad6924ec2b30d72&units=metric`;
+    const response = await fetch(url);
+    const data = await response.json();
+    setWeather(data);
+  };
+
   useEffect(() => {
-    getCurrentLocation();
-  }, []); // 랜더를 하고 나서 바로 실행된다.
+    if (city === "") {
+      getCurrentLocation();
+    } else {
+      getWeatherByCity();
+    }
+  }, [city]); // 랜더를 하고 나서 바로 실행된다.
 
   return (
     <WeatherContainer>
       <WeatherBox weather={weather} />
-      <WeatherButton cities={cities} />
+      <WeatherButton cities={cities} setCity={setCity} />
     </WeatherContainer>
   );
 };

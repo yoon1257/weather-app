@@ -5,6 +5,7 @@ export interface IWeather {
 }
 export interface ITemp {
   temp: number;
+  humidity: number;
 }
 
 export interface ICloud {
