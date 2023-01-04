@@ -1,6 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import styled from "styled-components";
+import "bootstrap/dist/css/bootstrap.min.css";
+import WeatherBox from "components/WeatherBox";
+import WeatherButton from "components/WeatherButton";
+import { IWeather } from "interface";
 
 //해야할일
 //1. 앱이 실행되자마자 현재기반의 날짜가 보인다
@@ -11,6 +15,8 @@ import styled from "styled-components";
 //6.로딩스피너
 
 const App: React.FC = () => {
+  const [weather, setWeather] = useState<IWeather | null>(null);
+  const cities = ["Paris", "New york", "Tokyo", "Seoul"];
   // 현재위치
   const getCurrentLocation = () => {
     navigator.geolocation.getCurrentPosition((position) => {
@@ -21,23 +27,29 @@ const App: React.FC = () => {
   };
 
   const getWeatherByCurrentLocation = async (lat: number, lon: number) => {
-    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=2fddad335d6c9dbe0ad6924ec2b30d72`;
+    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=2fddad335d6c9dbe0ad6924ec2b30d72&units=metric`;
     const response = await fetch(url);
     const data = await response.json();
-    console.log("data", data);
+    setWeather(data);
   };
 
   useEffect(() => {
     getCurrentLocation();
   }, []); // 랜더를 하고 나서 바로 실행된다.
 
-  return <WeatherContainer>hi</WeatherContainer>;
+  return (
+    <WeatherContainer>
+      <WeatherBox weather={weather} />
+      <WeatherButton cities={cities} />
+    </WeatherContainer>
+  );
 };
 
 const WeatherContainer = styled.div`
-  background-image: url("https://cdn.pixabay.com/photo/2018/06/21/13/57/clouds-3488632__340.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
   height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `;
 export default App;
